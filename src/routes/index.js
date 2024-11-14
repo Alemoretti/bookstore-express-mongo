@@ -1,10 +1,17 @@
-import express from "express"
-import books from "./bookRoutes.js"
-import authors from "./authorRoutes.js"
+import express from "express";
+import livros from "./livrosRoutes.js"
+import autores from "./autoresRoutes.js"
 
 const routes = (app) => {
-  app.route("/").get((req, res) => res.status(200).send("Bookstore in Node.js and Express"))
-  app.use(express.json(), books, authors)
+  app.route('/').get((req, res) => {
+    res.status(200).send({titulo: "Curso de node"})
+  })
+
+  app.use(
+    express.json(),
+    livros,
+    autores
+  )
 }
 
 export default routes

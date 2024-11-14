@@ -1,14 +1,14 @@
-import express from "express"
-import dbConnect from "./config/dbConnect.js"
+import express from "express";
+import db from "./config/dbConnect.js"
 import routes from "./routes/index.js"
 
-const dbConnection = await dbConnect()
-dbConnection.on("error", console.error.bind(console, "connection error:"))
-dbConnection.once("open", () => {
-  console.log("Connected to MongoDB")
+db.on("error", console.log.bind(console, 'Erro de conexão'))
+db.once("open", () => {
+  console.log('conexão com o banco feita com sucesso')
 })
 
-const app = express()
-routes(app)
+const app = express();
+app.use(express.json())
+routes(app);
 
 export default app
