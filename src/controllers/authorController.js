@@ -1,18 +1,17 @@
-import mongoose from "mongoose";
 import authors from "../models/Author.js";
 
 class AuthorController {
-  static getAllAuthors = async (req, res) => {
+  static getAllAuthors = async (req, res, next) => {
     try {
       const authorsResult = await authors.find();
 
       res.status(200).json(authorsResult);
     } catch (error) {
-      res.status(500).json({ message: "Internal server error" });
+      next(error)
     }
   };
 
-  static getAuthorById = async (req, res) => {
+  static getAuthorById = async (req, res, next) => {
     try {
       const id = req.params.id;
 
@@ -23,48 +22,44 @@ class AuthorController {
       } else {
         res.status(404).send({message: "Author id not found."});
       }
-    } catch (erro) {
-      if (erro instanceof mongoose.Error.CastError) {
-        res.status(400).send({message: "One or more data provided is incorrect."});
-      } else {
-        res.status(500).send({message: "Internal server error."});
-      }
+    } catch (error) {
+      next(error)
     }
   };
 
-  static addAuthor = async (req, res) => {
+  static addAuthor = async (req, res, next) => {
     try {
       let author = new authors(req.body);
 
       const authorResult = await author.save();
 
       res.status(201).send(authorResult.toJSON());
-    } catch (erro) {
-      res.status(500).send({message: `${erro.message} - author update failed.`});
+    } catch (error) {
+      next(error)
     }
   };
 
-  static updateAuthor = async (req, res) => {
+  static updateAuthor = async (req, res, next) => {
     try {
       const id = req.params.id;
   
       await authors.findByIdAndUpdate(id, {$set: req.body});
 
       res.status(200).send({message: "Author updated successfully"});
-    } catch (erro) {
-      res.status(500).send({message: erro.message});
+    } catch (error) {
+      next(error)
     }
   };
 
-  static deleteAuthor = async (req, res) => {
+  static deleteAuthor = async (req, res, next) => {
     try {
       const id = req.params.id;
 
       await authors.findByIdAndDelete(id);
 
       res.status(200).send({message: "Author deleted successfully"});
-    } catch (erro) {
-      res.status(500).send({message: erro.message});
+    } catch (error) {
+      next(error)
     }
   };
 }

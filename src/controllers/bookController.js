@@ -1,7 +1,7 @@
 import books from "../models/Book.js"
 
 class BookController {
-  static async getAllBooks(req, res) {
+  static async getAllBooks(req, res, next) {
     try {
       const booksResult = await books.find()
         .populate("author")
@@ -9,11 +9,11 @@ class BookController {
 
       res.status(200).json(booksResult);
     } catch (error) {
-      res.status(500).json({ message: "Internal server error" });
+      next(error)
     }
   }
 
-  static async getBookById(req, res) {
+  static async getBookById(req, res, next) {
     try {
       const id = req.params.id;
 
@@ -23,11 +23,11 @@ class BookController {
 
       res.status(200).send(bookResult);
     } catch (error) {
-      res.status(400).send({message: `${error.message} - Id do livro não localizado.`});
+      next(error)
     }
   }
 
-  static async addBook(req, res) {
+  static async addBook(req, res, next) {
     try {
       let book = new books(req.body);
 
@@ -35,11 +35,11 @@ class BookController {
 
       res.status(201).send(bookResult.toJSON());
     } catch (error) {
-      res.status(500).send({message: `${error.message} - failed to update book.`});
+      next(error)
     }
   }
 
-  static async updateBook(req, res) {
+  static async updateBook(req, res, next) {
     try {
       const id = req.params.id;
     
@@ -47,11 +47,11 @@ class BookController {
     
       res.status(200).send({message: "Book updated successfully"});
     } catch (error) {
-      res.status(500).send({message: error.message});
+      next(error)
     }
   }
 
-  static async deleteBook(req, res) {
+  static async deleteBook(req, res, next) {
     try {
       const id = req.params.id;
 
@@ -59,11 +59,11 @@ class BookController {
 
       res.status(200).send({message: "Book deleted successfully"});
     } catch (error) {
-      res.status(500).send({message: error.message});
+      next(error)
     }
   }
 
-  static listBookByPublisher = async (req, res) => {
+  static listBookByPublisher = async (req, res, next) => {
     try {
       const publisher = req.query.publisher;
       
@@ -71,7 +71,7 @@ class BookController {
 
       res.status(200).send(booksResult);
     } catch (error) {
-      res.status(500).json({ message: "Internal server error" });
+      next(error)
     }
   };
 }
